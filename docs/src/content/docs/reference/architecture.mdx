@@ -1,0 +1,35 @@
+---
+title: Architecture
+description: How the MikroLens app, API, database, and webhook worker fit together.
+---
+
+MikroLens runs as a browser app, a Node API, a SQLite database, and an optional webhook worker.
+
+For users, this means the product workspace can be self-hosted with a small operational footprint. For operators, the runtime pieces are simple enough to run together on one machine or split across static hosting and an API process.
+
+## Source Layout
+
+- `app/` contains the static browser UI, route helpers, rendering code, state transitions, and runtime config.
+- `api/src/domain/` contains domain entities and validation.
+- `api/src/application/` contains use cases, read models, policies, events, ports, and services.
+- `api/src/infrastructure/` contains SQLite, HTTP, OAuth, email, collaboration, security, and webhook adapters.
+- `api/tests/` contains API, application, domain, and infrastructure tests.
+- `tests/app/` contains browser-app unit tests that can run without a browser.
+- `docs/` contains this Astro Starlight documentation site.
+
+## Boundaries
+
+The API owns persistence, authentication, authorization, OpenAPI, and webhook delivery state. The browser app owns local UI state, route selection, and interaction flows.
+
+The static frontend can be served by the API for simple deployments or by another static host for split-origin deployments.
+
+## Tooling
+
+- TypeScript for the API and type declarations
+- Vanilla HTML, CSS, and JavaScript for the app
+- Vitest for tests
+- Biome for linting and formatting
+- esbuild for runtime bundles
+- Astro and Starlight for documentation
+
+`npm run build:web` writes `dist/app`. `npm run build:api` writes `dist/server/server.mjs`. `npm run build:workers` writes `dist/server/webhook-worker.mjs`.

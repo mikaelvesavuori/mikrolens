@@ -1,0 +1,3741 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "description": "MikroLens is a calm, self-hosted work ledger for product and engineering teams.",
+    "title": "MikroLens API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Service health snapshot"
+          },
+          "503": {
+            "description": "Service health check failed"
+          }
+        },
+        "summary": "Get the public health status for the MikroLens API"
+      }
+    },
+    "/api/bootstrap": {
+      "get": {
+        "operationId": "getBootstrap",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "spaceId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BootstrapSnapshot"
+                }
+              }
+            },
+            "description": "Initial app payload"
+          }
+        },
+        "summary": "Get the app bootstrap payload",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/spaces": {
+      "get": {
+        "operationId": "listSpaces",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Space"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Space list"
+          }
+        },
+        "summary": "List spaces",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createSpace",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "accent": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": ["name"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Space"
+                }
+              }
+            },
+            "description": "Created space"
+          }
+        },
+        "summary": "Create a space",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/spaces/{id}": {
+      "patch": {
+        "operationId": "updateSpace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "accent": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Space"
+                }
+              }
+            },
+            "description": "Updated space"
+          }
+        },
+        "summary": "Update a space",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/horizons": {
+      "get": {
+        "operationId": "listHorizons",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Horizon"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Horizon list"
+          }
+        },
+        "summary": "List horizons",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createHorizon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "key": {
+                    "enum": ["horizon_1", "horizon_2", "horizon_3"],
+                    "type": "string"
+                  },
+                  "spaceId": {
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": ["spaceId", "key"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Horizon"
+                }
+              }
+            },
+            "description": "Created horizon"
+          }
+        },
+        "summary": "Create a horizon",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/horizons/{id}": {
+      "patch": {
+        "operationId": "updateHorizon",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "timeframeText": {
+                    "type": "string"
+                  },
+                  "useDefaults": {
+                    "type": "boolean"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Horizon"
+                }
+              }
+            },
+            "description": "Updated horizon"
+          }
+        },
+        "summary": "Update a horizon",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/horizon-defaults": {
+      "get": {
+        "operationId": "listHorizonDefaults",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/HorizonDefault"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Organization-wide Horizon defaults"
+          }
+        },
+        "summary": "List Horizon defaults",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/horizon-defaults/{key}": {
+      "patch": {
+        "operationId": "updateHorizonDefault",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "timeframeText": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HorizonDefault"
+                }
+              }
+            },
+            "description": "Updated Horizon default"
+          }
+        },
+        "summary": "Update a Horizon default",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/views": {
+      "get": {
+        "operationId": "listViews",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedView"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Saved views"
+          }
+        },
+        "summary": "List saved views",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/api-identities": {
+      "get": {
+        "operationId": "listApiIdentities",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ApiIdentity"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "API identities"
+          }
+        },
+        "summary": "List API identities",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createApiIdentity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": ["Active", "Paused", "Revoked"],
+                    "type": "string"
+                  },
+                  "permissions": {
+                    "$ref": "#/components/schemas/AccessPolicy"
+                  }
+                },
+                "required": ["name"],
+                "type": "object"
+              },
+              "examples": {
+                "deliveryBot": {
+                  "description": "Provision a service account with scoped board access.",
+                  "value": {
+                    "description": "Reads delivery work and writes status updates in the Platform space.",
+                    "name": "Delivery Bot",
+                    "permissions": {
+                      "boards": {
+                        "grants": [
+                          {
+                            "boardId": "space_platform",
+                            "level": "editor"
+                          }
+                        ],
+                        "scope": "boards"
+                      },
+                      "documents": "viewer",
+                      "signals": "viewer"
+                    },
+                    "status": "Active"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiIdentityProvisioningResult"
+                },
+                "examples": {
+                  "deliveryBot": {
+                    "description": "Provisioning returns the identity plus the one-time bearer token.",
+                    "value": {
+                      "apiIdentity": {
+                        "createdAt": "2026-04-03T08:15:00.000Z",
+                        "description": "Reads delivery work and writes status updates in the Platform space.",
+                        "id": "api_identity_delivery_bot",
+                        "lastUsedAt": null,
+                        "name": "Delivery Bot",
+                        "permissions": {
+                          "boards": {
+                            "grants": [
+                              {
+                                "boardId": "space_platform",
+                                "level": "editor"
+                              }
+                            ],
+                            "scope": "boards"
+                          },
+                          "documents": "viewer",
+                          "signals": "viewer"
+                        },
+                        "status": "Active",
+                        "tokenLastRotatedAt": "2026-04-03T08:15:00.000Z",
+                        "updatedAt": "2026-04-03T08:15:00.000Z"
+                      },
+                      "token": "mikrolens_live_XXXXXXXXXXXXXXXXXXXXXXXX"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Created API identity and issued bearer token"
+          }
+        },
+        "summary": "Create an API identity",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "description": "Create a new API identity for a bot, integration, or service account. The bearer token is returned once."
+      }
+    },
+    "/api/api-identities/{id}": {
+      "patch": {
+        "operationId": "updateApiIdentity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": ["Active", "Paused", "Revoked"],
+                    "type": "string"
+                  },
+                  "permissions": {
+                    "$ref": "#/components/schemas/AccessPolicy"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiIdentity"
+                }
+              }
+            },
+            "description": "Updated API identity"
+          }
+        },
+        "summary": "Update an API identity",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/api-identities/{id}/rotate-token": {
+      "post": {
+        "operationId": "rotateApiIdentityToken",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiIdentityProvisioningResult"
+                }
+              }
+            },
+            "description": "Rotated bearer token for the API identity"
+          }
+        },
+        "summary": "Rotate an API identity bearer token",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "operationId": "listUsers",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Users"
+          }
+        },
+        "summary": "List users",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "name": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "role": {
+                    "enum": ["User", "Admin"],
+                    "type": "string"
+                  },
+                  "permissions": {
+                    "$ref": "#/components/schemas/AccessPolicy"
+                  }
+                },
+                "required": ["email"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Created user and sent invitation email"
+          }
+        },
+        "summary": "Create a user and send an invite",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "delete": {
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Deleted user"
+          }
+        },
+        "summary": "Delete a user",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "permissions": {
+                    "$ref": "#/components/schemas/AccessPolicy"
+                  },
+                  "role": {
+                    "enum": ["User", "Admin"],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Updated user"
+          }
+        },
+        "summary": "Update a user",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "requestSignInLink",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "type": "string"
+                  }
+                },
+                "required": ["email"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["message"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Generic sign-in response"
+          }
+        },
+        "summary": "Request a passwordless sign-in link"
+      }
+    },
+    "/auth/verify": {
+      "get": {
+        "operationId": "verifySignInLinkRedirect",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "schema": {
+              "format": "email",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect back to the app after verifying the sign-in link"
+          }
+        },
+        "summary": "Verify a passwordless sign-in link in the browser"
+      },
+      "post": {
+        "operationId": "verifySignInLink",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "token": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "token"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    },
+                    "exp": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    },
+                    "tokenType": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/AuthenticatedUser"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "refreshToken",
+                    "exp",
+                    "tokenType",
+                    "message",
+                    "user"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Verified sign-in link"
+          }
+        },
+        "summary": "Verify a passwordless sign-in link"
+      }
+    },
+    "/api/work-items": {
+      "get": {
+        "operationId": "listWorkItems",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "spaceId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "enum": [
+                "Inbox",
+                "Shaping",
+                "Ready",
+                "Active",
+                "Blocked",
+                "Parked",
+                "Waiting",
+                "Done",
+                "Archived"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "enum": ["Idea", "Problem", "Bug", "Task", "Change", "Decision request"],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "horizonName",
+            "schema": {
+              "enum": ["Now", "Next", "Later"],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "blocked",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "stale",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "onlyRoadmap",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Exact owner display name match.",
+            "example": "Sara",
+            "in": "query",
+            "name": "ownerName",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter to work owned by a specific user id.",
+            "example": "user_sara",
+            "in": "query",
+            "name": "ownerUserId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter to a specific Horizon key.",
+            "example": "horizon_1",
+            "in": "query",
+            "name": "horizonKey",
+            "schema": {
+              "enum": ["horizon_1", "horizon_2", "horizon_3"],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by planned vs unplanned work source.",
+            "example": "planned",
+            "in": "query",
+            "name": "source",
+            "schema": {
+              "enum": ["planned", "unplanned"],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Include work created at or after this timestamp.",
+            "example": "2026-04-01T00:00:00.000Z",
+            "in": "query",
+            "name": "createdAfter",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Include work created at or before this timestamp.",
+            "example": "2026-04-30T23:59:59.999Z",
+            "in": "query",
+            "name": "createdBefore",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Include work updated at or after this timestamp.",
+            "example": "2026-04-01T00:00:00.000Z",
+            "in": "query",
+            "name": "updatedAfter",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Include work updated at or before this timestamp.",
+            "example": "2026-04-30T23:59:59.999Z",
+            "in": "query",
+            "name": "updatedBefore",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Include work with a target end date on or after this date.",
+            "example": "2026-04-07",
+            "in": "query",
+            "name": "targetEndAfter",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Include work with a target end date on or before this date.",
+            "example": "2026-04-14",
+            "in": "query",
+            "name": "targetEndBefore",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Maximum number of records to return.",
+            "example": 50,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of filtered records to skip.",
+            "example": 0,
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Field to sort by before pagination.",
+            "example": "updatedAt",
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "enum": ["createdAt", "ref", "state", "targetEndDate", "title", "updatedAt"],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Sort direction for the selected sort field.",
+            "example": "desc",
+            "in": "query",
+            "name": "sortDirection",
+            "schema": {
+              "enum": ["asc", "desc"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WorkItemRecord"
+                  },
+                  "type": "array"
+                },
+                "examples": {
+                  "filteredWorkItems": {
+                    "description": "Filter by space, state, owner, and time window for bot-friendly sync jobs.",
+                    "value": [
+                      {
+                        "ageDays": 4,
+                        "blockedReason": "",
+                        "completedAt": null,
+                        "createdAt": "2026-04-01T09:00:00.000Z",
+                        "horizonId": "horizon_platform_now",
+                        "id": "work_item_delivery_api",
+                        "isBlocked": false,
+                        "isStale": false,
+                        "lastTouchedAt": "2026-04-03T09:30:00.000Z",
+                        "linkedDocuments": [],
+                        "ownerName": "Sara",
+                        "ownerUserIds": ["user_sara"],
+                        "owners": [],
+                        "ref": "ML-42",
+                        "roadmapRelevance": true,
+                        "source": "planned",
+                        "spaceId": "space_platform",
+                        "state": "Active",
+                        "summary": "Expose filters and auth that bots can rely on.",
+                        "targetEndDate": "2026-04-08",
+                        "targetStartDate": "2026-04-03",
+                        "title": "Expand API filtering for service accounts",
+                        "type": "Task",
+                        "updatedAt": "2026-04-03T09:30:00.000Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "description": "Filtered work items",
+            "headers": {
+              "X-Limit": {
+                "description": "The effective page size used for the response.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Offset": {
+                "description": "The starting offset into the filtered result set.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Total-Count": {
+                "description": "The total number of filtered work items before pagination.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List work items",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "List work items for the signed-in user or API identity. Supports field filters, time filters, sorting, and offset pagination."
+      },
+      "post": {
+        "operationId": "createWorkItem",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "horizonId": {
+                    "type": "string"
+                  },
+                  "ownerName": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "ownerUserIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "source": {
+                    "enum": ["planned", "unplanned"],
+                    "type": "string"
+                  },
+                  "spaceId": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "state": {
+                    "enum": [
+                      "Inbox",
+                      "Shaping",
+                      "Ready",
+                      "Active",
+                      "Blocked",
+                      "Parked",
+                      "Waiting",
+                      "Done",
+                      "Archived"
+                    ],
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "targetEndDate": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "targetStartDate": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": ["Idea", "Problem", "Bug", "Task", "Change", "Decision request"],
+                    "type": "string"
+                  }
+                },
+                "required": ["spaceId", "title"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkItemRecord"
+                }
+              }
+            },
+            "description": "Created work item"
+          }
+        },
+        "summary": "Create a work item",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/signals": {
+      "get": {
+        "operationId": "listSignals",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SignalRecord"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Signals"
+          }
+        },
+        "summary": "List signals",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createSignal",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "expectedTimeline": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "urgency": {
+                    "enum": ["Low", "Medium", "High"],
+                    "type": "string"
+                  }
+                },
+                "required": ["title", "source"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalRecord"
+                }
+              }
+            },
+            "description": "Created signal"
+          }
+        },
+        "summary": "Create a shared signal",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/signals/{id}": {
+      "get": {
+        "operationId": "getSignal",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalRecord"
+                }
+              }
+            },
+            "description": "Single signal"
+          },
+          "404": {
+            "description": "Signal not found"
+          }
+        },
+        "summary": "Get a signal",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "updateSignal",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "expectedTimeline": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "urgency": {
+                    "enum": ["Low", "Medium", "High"],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalRecord"
+                }
+              }
+            },
+            "description": "Updated signal"
+          }
+        },
+        "summary": "Update a signal",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "deleteSignal",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted signal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalRecord"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a signal",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/work-items/{id}": {
+      "get": {
+        "operationId": "getWorkItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkItemRecord"
+                }
+              }
+            },
+            "description": "Single work item"
+          },
+          "404": {
+            "description": "Work item not found"
+          }
+        },
+        "summary": "Get a work item",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "updateWorkItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "blockedReason": {
+                    "type": "string"
+                  },
+                  "horizonId": {
+                    "type": "string"
+                  },
+                  "ownerName": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "ownerUserIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "state": {
+                    "enum": [
+                      "Inbox",
+                      "Shaping",
+                      "Ready",
+                      "Active",
+                      "Blocked",
+                      "Parked",
+                      "Waiting",
+                      "Done",
+                      "Archived"
+                    ],
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "targetEndDate": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "targetStartDate": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": ["Idea", "Problem", "Bug", "Task", "Change", "Decision request"],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkItemRecord"
+                }
+              }
+            },
+            "description": "Updated work item"
+          }
+        },
+        "summary": "Update a work item",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "deleteWorkItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted work item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkItemRecord"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a work item",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/signals/{id}/pull": {
+      "post": {
+        "operationId": "pullSignalToSpace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "targetSpaceId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["targetSpaceId"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkItemRecord"
+                }
+              }
+            },
+            "description": "Pulled signal into a space inbox"
+          }
+        },
+        "summary": "Pull a shared signal into a space",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/work-items/{id}/document-links": {
+      "post": {
+        "operationId": "linkDocumentToWorkItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "documentId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["documentId"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkItemRecord"
+                }
+              }
+            },
+            "description": "Linked document"
+          }
+        },
+        "summary": "Link an existing document to a work item",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/work-items/{id}/document-links/{documentId}": {
+      "delete": {
+        "operationId": "unlinkDocumentFromWorkItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "documentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkItemRecord"
+                }
+              }
+            },
+            "description": "Unlinked document"
+          }
+        },
+        "summary": "Unlink a document from a work item",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/documents": {
+      "post": {
+        "operationId": "createDocument",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "horizonId": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "markdown": {
+                    "type": "string"
+                  },
+                  "spaceId": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": ["Strategy", "Evolution", "Note"],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentSummary"
+                }
+              }
+            },
+            "description": "Created document"
+          }
+        },
+        "summary": "Create a document",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "listDocuments",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "spaceId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentSummary"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Documents"
+          }
+        },
+        "summary": "List documents",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/documents/{id}": {
+      "get": {
+        "operationId": "getDocument",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/DocumentSummary"
+                    },
+                    {
+                      "properties": {
+                        "linkedWorkItems": {
+                          "items": {
+                            "$ref": "#/components/schemas/WorkItemRecord"
+                          },
+                          "type": "array"
+                        },
+                        "markdown": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["markdown", "linkedWorkItems"],
+                      "type": "object"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Document detail"
+          }
+        },
+        "summary": "Get a document",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "updateDocument",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "horizonId": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "markdown": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": ["Strategy", "Evolution", "Note"],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/DocumentSummary"
+                    },
+                    {
+                      "properties": {
+                        "linkedWorkItems": {
+                          "items": {
+                            "$ref": "#/components/schemas/WorkItemRecord"
+                          },
+                          "type": "array"
+                        },
+                        "markdown": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["markdown", "linkedWorkItems"],
+                      "type": "object"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Updated document detail"
+          }
+        },
+        "summary": "Update a document",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "deleteDocument",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentSummary"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a document",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/understand": {
+      "get": {
+        "operationId": "getUnderstandSnapshot",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "spaceId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnderstandSnapshot"
+                }
+              }
+            },
+            "description": "Understand snapshot"
+          }
+        },
+        "summary": "Get the system understanding view",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/plan": {
+      "get": {
+        "operationId": "getPlanSnapshot",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "spaceId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanSnapshot"
+                }
+              }
+            },
+            "description": "Plan snapshot"
+          }
+        },
+        "summary": "Get the roadmap and planning view",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "operationId": "getOpenApiSchema",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OpenAPI schema"
+          }
+        },
+        "summary": "Get the OpenAPI schema"
+      }
+    },
+    "/api/health": {
+      "get": {
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Service health snapshot"
+          },
+          "503": {
+            "description": "Service health check failed"
+          }
+        },
+        "summary": "Get the public health status for the MikroLens API"
+      }
+    },
+    "/auth/oauth/providers": {
+      "get": {
+        "operationId": "listOAuthProviders",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "count": {
+                      "type": "number"
+                    },
+                    "providers": {
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "loginUrl": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["id", "name", "loginUrl"],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": ["providers", "count"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Configured OAuth providers"
+          }
+        },
+        "summary": "List configured OAuth providers"
+      }
+    },
+    "/auth/demo-users": {
+      "get": {
+        "operationId": "listDemoUsers",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "count": {
+                      "type": "number"
+                    },
+                    "users": {
+                      "items": {
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "role": {
+                            "enum": ["User", "Admin"],
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": ["Invited", "Active"],
+                            "type": "string"
+                          }
+                        },
+                        "required": ["id", "email", "name", "role", "status"],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": ["users", "count"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Available demo users when direct demo sign-in is enabled"
+          }
+        },
+        "summary": "List optional demo users for direct local sign-in"
+      }
+    },
+    "/auth/demo-login": {
+      "post": {
+        "operationId": "signInDemoUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["userId"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    },
+                    "exp": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    },
+                    "tokenType": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/AuthenticatedUser"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "refreshToken",
+                    "exp",
+                    "tokenType",
+                    "message",
+                    "user"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Signed in as the selected demo user when direct demo sign-in is enabled"
+          }
+        },
+        "summary": "Directly sign in as an optional demo user"
+      }
+    },
+    "/auth/oauth/{providerId}": {
+      "get": {
+        "operationId": "initiateOAuth",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "providerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to OAuth provider"
+          }
+        },
+        "summary": "Initiate OAuth sign-in"
+      }
+    },
+    "/auth/oauth/{providerId}/callback": {
+      "get": {
+        "operationId": "completeOAuth",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "providerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect back to MikroLens after OAuth sign-in"
+          }
+        },
+        "summary": "Handle OAuth callback"
+      }
+    },
+    "/auth/metadata": {
+      "get": {
+        "operationId": "getAuthMetadata",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "authenticationRequired": {
+                      "type": "boolean"
+                    },
+                    "demoLoginEnabled": {
+                      "type": "boolean"
+                    },
+                    "hasUsers": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["authenticationRequired", "demoLoginEnabled", "hasUsers"],
+                  "type": "object"
+                },
+                "examples": {
+                  "metadata": {
+                    "description": "The frontend can use this instead of fetching the full bootstrap payload before sign-in.",
+                    "value": {
+                      "authenticationRequired": false,
+                      "demoLoginEnabled": false,
+                      "hasUsers": false
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Authentication requirements for the current MikroLens deployment"
+          }
+        },
+        "summary": "Get authentication metadata for the current deployment"
+      }
+    },
+    "/auth/session": {
+      "get": {
+        "operationId": "getAuthSession",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/AuthenticatedUser"
+                    }
+                  },
+                  "required": ["user"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The current signed-in session"
+          }
+        },
+        "summary": "Get the current signed-in session",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionCookie": []
+          }
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "refreshAuthSession",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "required": ["refreshToken"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokenResponse"
+                }
+              }
+            },
+            "description": "Refreshed MikroAuth access token"
+          }
+        },
+        "summary": "Refresh a signed-in browser session"
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Signed out, revoked the refresh token if supplied, and cleared the compatibility session cookie"
+          }
+        },
+        "summary": "Clear the current signed-in session"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "__MIKROLENS_BASE_URL__"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "AuthenticatedUser": {
+        "properties": {
+          "email": {
+            "format": "email",
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "role": {
+            "enum": ["User", "Admin"],
+            "type": "string"
+          }
+        },
+        "required": ["id", "email", "role", "permissions"],
+        "type": "object"
+      },
+      "AuthTokenResponse": {
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "exp": {
+            "description": "Access-token lifetime in seconds.",
+            "type": "number"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "tokenType": {
+            "example": "Bearer",
+            "type": "string"
+          }
+        },
+        "required": ["accessToken", "refreshToken", "exp", "tokenType"],
+        "type": "object"
+      },
+      "BootstrapSnapshot": {
+        "properties": {
+          "apiIdentities": {
+            "items": {
+              "$ref": "#/components/schemas/ApiIdentity"
+            },
+            "type": "array"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentSummary"
+            },
+            "type": "array"
+          },
+          "generatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "horizonDefaults": {
+            "items": {
+              "$ref": "#/components/schemas/HorizonDefault"
+            },
+            "type": "array"
+          },
+          "horizons": {
+            "items": {
+              "$ref": "#/components/schemas/Horizon"
+            },
+            "type": "array"
+          },
+          "meta": {
+            "properties": {
+              "apiIdentityStatuses": {
+                "items": {
+                  "enum": ["Active", "Paused", "Revoked"],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "boardWorkflowStates": {
+                "items": {
+                  "enum": [
+                    "Inbox",
+                    "Shaping",
+                    "Ready",
+                    "Active",
+                    "Blocked",
+                    "Parked",
+                    "Waiting",
+                    "Done"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "documentTypes": {
+                "items": {
+                  "enum": ["Strategy", "Evolution", "Note"],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "horizonKeys": {
+                "items": {
+                  "enum": ["horizon_1", "horizon_2", "horizon_3"],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "openApiPath": {
+                "type": "string"
+              },
+              "productName": {
+                "type": "string"
+              },
+              "signalStatuses": {
+                "items": {
+                  "enum": ["Open", "Pulled"],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "signalUrgencies": {
+                "items": {
+                  "enum": ["Low", "Medium", "High"],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "userRoles": {
+                "items": {
+                  "enum": ["User", "Admin"],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "userStatuses": {
+                "items": {
+                  "enum": ["Invited", "Active"],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "workItemTypes": {
+                "items": {
+                  "enum": ["Idea", "Problem", "Bug", "Task", "Change", "Decision request"],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "workflowStates": {
+                "items": {
+                  "enum": [
+                    "Inbox",
+                    "Shaping",
+                    "Ready",
+                    "Active",
+                    "Blocked",
+                    "Parked",
+                    "Waiting",
+                    "Done",
+                    "Archived"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "accessLevels": {
+                "items": {
+                  "$ref": "#/components/schemas/AccessLevel"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "apiIdentityStatuses",
+              "boardWorkflowStates",
+              "documentTypes",
+              "horizonKeys",
+              "openApiPath",
+              "productName",
+              "signalStatuses",
+              "signalUrgencies",
+              "userRoles",
+              "userStatuses",
+              "workItemTypes",
+              "workflowStates",
+              "accessLevels"
+            ],
+            "type": "object"
+          },
+          "plan": {
+            "$ref": "#/components/schemas/PlanSnapshot"
+          },
+          "spaces": {
+            "items": {
+              "$ref": "#/components/schemas/Space"
+            },
+            "type": "array"
+          },
+          "signals": {
+            "items": {
+              "$ref": "#/components/schemas/SignalRecord"
+            },
+            "type": "array"
+          },
+          "understand": {
+            "$ref": "#/components/schemas/UnderstandSnapshot"
+          },
+          "users": {
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "type": "array"
+          },
+          "views": {
+            "items": {
+              "$ref": "#/components/schemas/SavedView"
+            },
+            "type": "array"
+          },
+          "workItems": {
+            "items": {
+              "$ref": "#/components/schemas/WorkItemRecord"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "generatedAt",
+          "meta",
+          "apiIdentities",
+          "users",
+          "spaces",
+          "horizonDefaults",
+          "horizons",
+          "views",
+          "workItems",
+          "signals",
+          "documents",
+          "understand",
+          "plan"
+        ],
+        "type": "object"
+      },
+      "ApiIdentity": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "lastUsedAt": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["Active", "Paused", "Revoked"],
+            "type": "string"
+          },
+          "tokenLastRotatedAt": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/AccessPolicy"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "status",
+          "lastUsedAt",
+          "tokenLastRotatedAt",
+          "createdAt",
+          "updatedAt",
+          "permissions"
+        ],
+        "type": "object",
+        "example": {
+          "createdAt": "2026-04-03T08:15:00.000Z",
+          "description": "Reads delivery work and writes status updates in the Platform space.",
+          "id": "api_identity_delivery_bot",
+          "lastUsedAt": "2026-04-03T10:02:00.000Z",
+          "name": "Delivery Bot",
+          "permissions": {
+            "boards": {
+              "grants": [
+                {
+                  "boardId": "space_platform",
+                  "level": "editor"
+                }
+              ],
+              "scope": "boards"
+            },
+            "documents": "viewer",
+            "signals": "viewer"
+          },
+          "status": "Active",
+          "tokenLastRotatedAt": "2026-04-03T08:15:00.000Z",
+          "updatedAt": "2026-04-03T10:02:00.000Z"
+        }
+      },
+      "ApiIdentityProvisioningResult": {
+        "properties": {
+          "apiIdentity": {
+            "$ref": "#/components/schemas/ApiIdentity"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": ["apiIdentity", "token"],
+        "type": "object",
+        "example": {
+          "apiIdentity": {
+            "createdAt": "2026-04-03T08:15:00.000Z",
+            "description": "Reads delivery work and writes status updates in the Platform space.",
+            "id": "api_identity_delivery_bot",
+            "lastUsedAt": "2026-04-03T10:02:00.000Z",
+            "name": "Delivery Bot",
+            "permissions": {
+              "boards": {
+                "grants": [
+                  {
+                    "boardId": "space_platform",
+                    "level": "editor"
+                  }
+                ],
+                "scope": "boards"
+              },
+              "documents": "viewer",
+              "signals": "viewer"
+            },
+            "status": "Active",
+            "tokenLastRotatedAt": "2026-04-03T08:15:00.000Z",
+            "updatedAt": "2026-04-03T10:02:00.000Z"
+          },
+          "token": "mikrolens_live_XXXXXXXXXXXXXXXXXXXXXXXX"
+        }
+      },
+      "DocumentSummary": {
+        "properties": {
+          "horizonKey": {
+            "enum": ["horizon_1", "horizon_2", "horizon_3"],
+            "nullable": true,
+            "type": "string"
+          },
+          "horizonName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "spaceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "spaceName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "enum": ["Strategy", "Evolution", "Note"],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "title",
+          "summary",
+          "spaceId",
+          "spaceName",
+          "horizonKey",
+          "horizonName"
+        ],
+        "type": "object"
+      },
+      "HorizonDefault": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "key": {
+            "enum": ["horizon_1", "horizon_2", "horizon_3"],
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orderIndex": {
+            "type": "integer"
+          },
+          "timeframeText": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "orderIndex",
+          "description",
+          "timeframeText",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "Horizon": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "descriptionOverride": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "inheritsDefault": {
+            "type": "boolean"
+          },
+          "key": {
+            "enum": ["horizon_1", "horizon_2", "horizon_3"],
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labelOverride": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "orderIndex": {
+            "type": "integer"
+          },
+          "spaceId": {
+            "type": "string"
+          },
+          "timeframeText": {
+            "type": "string"
+          },
+          "timeframeTextOverride": {
+            "nullable": true,
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "spaceId",
+          "key",
+          "name",
+          "label",
+          "orderIndex",
+          "description",
+          "timeframeText",
+          "inheritsDefault",
+          "createdAt",
+          "updatedAt",
+          "labelOverride",
+          "descriptionOverride",
+          "timeframeTextOverride"
+        ],
+        "type": "object"
+      },
+      "MetricCard": {
+        "properties": {
+          "detail": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": ["label", "value", "detail"],
+        "type": "object"
+      },
+      "PlanSnapshot": {
+        "properties": {
+          "computed": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "horizons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": ["computed", "horizons"],
+        "type": "object"
+      },
+      "SavedView": {
+        "properties": {
+          "accent": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "filters": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "scope": {
+            "enum": ["Understand", "Direct", "Plan", "Work"],
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "scope",
+          "accent",
+          "filters",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "Space": {
+        "properties": {
+          "accent": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": ["id", "name", "description", "accent", "createdAt", "updatedAt"],
+        "type": "object"
+      },
+      "SignalRecord": {
+        "properties": {
+          "ageDays": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "expectedTimeline": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "isStale": {
+            "type": "boolean"
+          },
+          "pulledAt": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "pulledIntoSpace": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Space"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pulledIntoWorkItemId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "pulledIntoWorkItemRef": {
+            "nullable": true,
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["Open", "Pulled"],
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "urgency": {
+            "enum": ["Low", "Medium", "High"],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "ref",
+          "title",
+          "summary",
+          "source",
+          "urgency",
+          "expectedTimeline",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "pulledAt",
+          "pulledIntoWorkItemId",
+          "ageDays",
+          "isStale",
+          "pulledIntoSpace",
+          "pulledIntoWorkItemRef"
+        ],
+        "type": "object"
+      },
+      "User": {
+        "properties": {
+          "activatedAt": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "invitedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "lastSignedInAt": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "role": {
+            "enum": ["User", "Admin"],
+            "type": "string"
+          },
+          "status": {
+            "enum": ["Invited", "Active"],
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/AccessPolicy"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "role",
+          "status",
+          "invitedAt",
+          "activatedAt",
+          "lastSignedInAt",
+          "createdAt",
+          "updatedAt",
+          "permissions"
+        ],
+        "type": "object"
+      },
+      "UnderstandSnapshot": {
+        "properties": {
+          "blockedItems": {
+            "items": {
+              "$ref": "#/components/schemas/WorkItemRecord"
+            },
+            "type": "array"
+          },
+          "counts": {
+            "properties": {
+              "blocked": {
+                "type": "integer"
+              },
+              "inboxDebt": {
+                "type": "integer"
+              },
+              "needsOwner": {
+                "type": "integer"
+              },
+              "pastTarget": {
+                "type": "integer"
+              },
+              "stale": {
+                "type": "integer"
+              },
+              "unplannedOpen": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "blocked",
+              "inboxDebt",
+              "needsOwner",
+              "pastTarget",
+              "stale",
+              "unplannedOpen"
+            ],
+            "type": "object"
+          },
+          "pastTargetItems": {
+            "items": {
+              "$ref": "#/components/schemas/WorkItemRecord"
+            },
+            "type": "array"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/MetricCard"
+            },
+            "type": "array"
+          },
+          "recentChanges": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "resolutionDistribution": {
+            "items": {
+              "properties": {
+                "bucket": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              },
+              "required": ["bucket", "count"],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "staleItems": {
+            "items": {
+              "$ref": "#/components/schemas/WorkItemRecord"
+            },
+            "type": "array"
+          },
+          "waitDistribution": {
+            "items": {
+              "properties": {
+                "bucket": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              },
+              "required": ["bucket", "count"],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "counts",
+          "metrics",
+          "recentChanges",
+          "blockedItems",
+          "pastTargetItems",
+          "staleItems",
+          "waitDistribution",
+          "resolutionDistribution"
+        ],
+        "type": "object"
+      },
+      "WorkItemRecord": {
+        "properties": {
+          "ageDays": {
+            "type": "integer"
+          },
+          "blockedReason": {
+            "type": "string"
+          },
+          "completedAt": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "horizon": {
+            "$ref": "#/components/schemas/Horizon"
+          },
+          "id": {
+            "type": "string"
+          },
+          "isBlocked": {
+            "type": "boolean"
+          },
+          "isStale": {
+            "type": "boolean"
+          },
+          "linkedDocuments": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentSummary"
+            },
+            "type": "array"
+          },
+          "ownerName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "ownerUserIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "owners": {
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "type": "array"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "roadmapRelevance": {
+            "type": "boolean"
+          },
+          "source": {
+            "enum": ["planned", "unplanned"],
+            "type": "string"
+          },
+          "space": {
+            "$ref": "#/components/schemas/Space"
+          },
+          "state": {
+            "enum": [
+              "Inbox",
+              "Shaping",
+              "Ready",
+              "Active",
+              "Blocked",
+              "Parked",
+              "Waiting",
+              "Done",
+              "Archived"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "targetEndDate": {
+            "nullable": true,
+            "type": "string"
+          },
+          "targetStartDate": {
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "enum": ["Idea", "Problem", "Bug", "Task", "Change", "Decision request"],
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "ref",
+          "type",
+          "title",
+          "summary",
+          "state",
+          "ownerName",
+          "ownerUserIds",
+          "source",
+          "roadmapRelevance",
+          "blockedReason",
+          "updatedAt",
+          "completedAt",
+          "ageDays",
+          "isBlocked",
+          "isStale",
+          "space",
+          "horizon",
+          "targetStartDate",
+          "targetEndDate",
+          "linkedDocuments",
+          "owners"
+        ],
+        "type": "object",
+        "example": {
+          "ageDays": 4,
+          "blockedReason": "",
+          "completedAt": null,
+          "createdAt": "2026-04-01T09:00:00.000Z",
+          "horizon": {
+            "createdAt": "2026-03-01T10:00:00.000Z",
+            "description": "Immediate work and current planning focus.",
+            "descriptionOverride": null,
+            "id": "horizon_platform_now",
+            "inheritsDefault": true,
+            "key": "horizon_1",
+            "label": "Now",
+            "labelOverride": null,
+            "name": "Now",
+            "orderIndex": 0,
+            "spaceId": "space_platform",
+            "timeframeText": "Current work and near-term pull decisions.",
+            "timeframeTextOverride": null,
+            "updatedAt": "2026-03-01T10:00:00.000Z"
+          },
+          "horizonId": "horizon_platform_now",
+          "id": "work_item_delivery_api",
+          "isBlocked": false,
+          "isStale": false,
+          "lastTouchedAt": "2026-04-03T09:30:00.000Z",
+          "linkedDocuments": [],
+          "ownerName": "Sara",
+          "ownerUserIds": ["user_sara"],
+          "owners": [
+            {
+              "activatedAt": "2026-03-02T08:00:00.000Z",
+              "createdAt": "2026-03-01T08:00:00.000Z",
+              "email": "sara@example.com",
+              "id": "user_sara",
+              "invitedAt": "2026-03-01T08:00:00.000Z",
+              "lastSignedInAt": "2026-04-03T07:45:00.000Z",
+              "name": "Sara",
+              "permissions": {
+                "boards": {
+                  "level": "editor",
+                  "scope": "all"
+                },
+                "documents": "editor",
+                "signals": "editor"
+              },
+              "role": "User",
+              "status": "Active",
+              "updatedAt": "2026-04-03T07:45:00.000Z"
+            }
+          ],
+          "ref": "ML-42",
+          "roadmapRelevance": true,
+          "source": "planned",
+          "space": {
+            "accent": "#3b82f6",
+            "createdAt": "2026-03-01T08:00:00.000Z",
+            "description": "Shared platform and internal systems work.",
+            "id": "space_platform",
+            "name": "Platform",
+            "updatedAt": "2026-03-01T08:00:00.000Z"
+          },
+          "spaceId": "space_platform",
+          "state": "Active",
+          "summary": "Expose filters and auth that bots can rely on.",
+          "targetEndDate": "2026-04-08",
+          "targetStartDate": "2026-04-03",
+          "title": "Expand API filtering for service accounts",
+          "type": "Task",
+          "updatedAt": "2026-04-03T09:30:00.000Z"
+        }
+      },
+      "AccessLevel": {
+        "enum": ["viewer", "editor", "admin"],
+        "type": "string"
+      },
+      "BoardPermissionGrant": {
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "level": {
+            "$ref": "#/components/schemas/AccessLevel"
+          }
+        },
+        "required": ["boardId", "level"],
+        "type": "object"
+      },
+      "BoardAccess": {
+        "oneOf": [
+          {
+            "properties": {
+              "level": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/AccessLevel"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scope": {
+                "const": "all",
+                "type": "string"
+              }
+            },
+            "required": ["scope", "level"],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "grants": {
+                "items": {
+                  "$ref": "#/components/schemas/BoardPermissionGrant"
+                },
+                "type": "array"
+              },
+              "scope": {
+                "const": "boards",
+                "type": "string"
+              }
+            },
+            "required": ["scope", "grants"],
+            "type": "object"
+          }
+        ]
+      },
+      "AccessPolicy": {
+        "properties": {
+          "boards": {
+            "$ref": "#/components/schemas/BoardAccess"
+          },
+          "documents": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AccessLevel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "signals": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AccessLevel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": ["boards", "signals", "documents"],
+        "type": "object",
+        "example": {
+          "boards": {
+            "grants": [
+              {
+                "boardId": "space_platform",
+                "level": "editor"
+              }
+            ],
+            "scope": "boards"
+          },
+          "documents": "viewer",
+          "signals": "viewer"
+        }
+      }
+    },
+    "securitySchemes": {
+      "sessionCookie": {
+        "description": "Compatibility browser session cookie for signed-in MikroLens users.",
+        "in": "cookie",
+        "name": "mikrolens_session",
+        "type": "apiKey"
+      },
+      "bearerAuth": {
+        "bearerFormat": "MikroAuth access token or MikroLens API identity token",
+        "description": "Bearer token for signed-in users, bots, service accounts, and other API identities.",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  }
+}

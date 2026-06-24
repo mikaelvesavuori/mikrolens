@@ -1,0 +1,51 @@
+---
+title: MikroLens
+description: Lightweight product management from intake to strategy to work.
+template: splash
+hero:
+  tagline: Lightweight product management for teams that want intake, ideas, strategy, planning, and work in one shared place.
+  image:
+    light: ../../assets/mikrolens.png
+    dark: ../../assets/mikrolens.png
+  actions:
+    - text: Get Started
+      link: /lens/docs/getting-started/intro
+      icon: rocket
+    - text: Installation
+      link: /lens/docs/getting-started/installation
+      icon: laptop
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="Start Here" icon="open-book">
+    Learn what MikroLens is for and how the pieces fit together.
+
+    <LinkCard title="What is MikroLens?" href="/lens/docs/getting-started/intro" />
+    <LinkCard title="Installation" href="/lens/docs/getting-started/installation" />
+  </Card>
+
+  <Card title="Product Flow" icon="puzzle">
+    Follow intake through ideas, documents, planning, and execution.
+
+    <LinkCard title="Work and Planning" href="/lens/docs/guides/work-and-planning" />
+    <LinkCard title="Intake" href="/lens/docs/guides/intake" />
+    <LinkCard title="Automation and API" href="/lens/docs/guides/automation-api" />
+  </Card>
+
+  <Card title="Running MikroLens" icon="setting">
+    Configure sign-in, deployment, and the self-hosted runtime.
+
+    <LinkCard title="Configuration" href="/lens/docs/guides/configuration" />
+    <LinkCard title="Authentication" href="/lens/docs/guides/authentication" />
+    <LinkCard title="Deployment" href="/lens/docs/guides/deployment" />
+  </Card>
+
+  <Card title="Reference" icon="document">
+    Understand the system shape and where MikroLens fits.
+
+    <LinkCard title="Comparison" href="/lens/docs/reference/comparison" />
+    <LinkCard title="Architecture" href="/lens/docs/reference/architecture" />
+  </Card>
+</CardGrid>

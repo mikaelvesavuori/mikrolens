@@ -1,0 +1,12 @@
+{
+  "api": {
+    "baseUrl": "http://127.0.0.1:3000"
+  },
+  "auth": {
+    "enableOAuth": true,
+    "enablePasswordless": true,
+    "mode": "auto",
+    "subtitle": "Use your organization login or request a secure sign-in link.",
+    "title": "MikroLens"
+  }
+}

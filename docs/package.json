@@ -1,0 +1,35 @@
+{
+  "name": "mikrolens-docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The documentation site for MikroLens.",
+  "author": "MikroLens",
+  "license": "MIT",
+  "keywords": [
+    "mikrolens",
+    "documentation",
+    "docs",
+    "starlight"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikaelvesavuori/mikrolens.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mikaelvesavuori/mikrolens/issues"
+  },
+  "homepage": "https://github.com/mikaelvesavuori/mikrolens#readme",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "latest",
+    "astro": "7",
+    "typescript": "6"
+  }
+}

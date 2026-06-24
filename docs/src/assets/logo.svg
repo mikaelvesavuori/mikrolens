@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="MikroLens logo">
+  <rect width="160" height="160" rx="32" fill="#111113" />
+  <path d="M26 80c15-24 33-36 54-36s39 12 54 36c-15 24-33 36-54 36S41 104 26 80Z" fill="none" stroke="#7fa6ff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="80" cy="80" r="14" fill="#7fa6ff" />
+</svg>

@@ -1,0 +1,80 @@
+---
+title: Authentication
+description: Configure team sign-in with magic links, OAuth, token sessions, and email delivery.
+---
+
+MikroLens supports passwordless magic links and optional OAuth providers. Sign-in uses MikroAuth access and refresh tokens, with the browser automatically refreshing active sessions while people use the app.
+
+## Magic Links
+
+Magic-link sign-in uses the backend email settings. If SMTP is not configured, MikroLens prints sign-in and invitation links in the terminal.
+
+To enable SMTP, set these backend fields together:
+
+```json
+{
+  "email": {
+    "emailSubject": "Sign in to MikroLens",
+    "host": "smtp.example.com",
+    "maxRetries": 2,
+    "password": "replace-me",
+    "port": 465,
+    "secure": true,
+    "user": "replace-me@example.com"
+  }
+}
+```
+
+Partial SMTP config fails startup so production deployments do not silently lose sign-in messages.
+
+## OAuth
+
+OAuth providers are configured under `oauth.presets`. For Google:
+
+```json
+{
+  "oauth": {
+    "presets": {
+      "google": {
+        "clientId": "replace-me",
+        "clientSecret": "replace-me",
+        "redirectUri": "https://api.example.com/auth/oauth/google/callback"
+      }
+    }
+  }
+}
+```
+
+The redirect URI must match the provider configuration exactly. The user must already exist in MikroLens, and the provider must return an email claim.
+
+## Token Sessions
+
+Use a stable `MIKROLENS_AUTH_JWT_SECRET` in production. The local default is generated at startup, which is convenient for development but invalidates tokens when the process restarts.
+
+Refresh-token lifetime and active session count can be tuned with `MIKROLENS_AUTH_REFRESH_TOKEN_EXPIRY_SECONDS` and `MIKROLENS_AUTH_MAX_ACTIVE_SESSIONS`.
+
+MikroLens still sets a compatible session cookie during sign-in. Bearer tokens are the primary browser auth path, but the cookie keeps older sessions and some deployment shapes working while the product moves toward 1.0.
+
+## Authorization
+
+MikroLens uses explicit permission strings for team features, in the same spirit as MolnOS Run. Admin users receive settings permissions such as `settings.users.manage`, while normal users receive product-work permissions such as `work.write`, `documents.write`, and `intake.write`.
+
+API identities remain separate from human sessions. They use bearer tokens and scoped access policies for automation, so integrations can be limited to the boards, documents, and signals they actually need.
+
+## Demo Sign-In
+
+Direct demo sign-in is disabled by default. It is only meant for local demos, screenshots, walkthroughs, and seeded scaffold workspaces.
+
+Enable it intentionally with `MIKROLENS_DEMO_LOGIN_ENABLED=true` or `--demo-login`. Pair it with `MIKROLENS_SEED_DEMO_DATA=true`, `--seed-demo-data`, or `npm run seed:demo` when you want the bundled demo workspace.
+
+## Frontend Auth Mode
+
+`app/config.json` controls which sign-in methods are visible and whether the UI is gated:
+
+- `auth.mode: "auto"` requires sign-in once users exist.
+- `auth.mode: "required"` always shows the sign-in screen.
+- `auth.mode: "disabled"` never gates the UI.
+
+Set `auth.initialUser.email` in `mikrolens.config.json` before the first server start to create the first Admin user automatically. MikroLens only creates this user when the user table is empty; it never overwrites existing users on later starts.
+
+For a fresh local install, `auto` is the easiest default while you are deciding how to configure sign-in. For a team deployment, set an initial user and use `required` once sign-in delivery is configured.

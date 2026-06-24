@@ -1,0 +1,78 @@
+---
+title: Deployment
+description: Deploy the MikroLens app, API, SQLite data, and webhook worker.
+---
+
+MikroLens deploys as a static browser app, a Node API, SQLite data, and an optional webhook worker.
+
+Release downloads are split the same way:
+
+- `mikrolens_app_<version>.zip` contains the static browser app.
+- `mikrolens_api_<version>.zip` contains the API server, webhook worker, and backend config example.
+
+## Build
+
+```bash
+npm run build
+```
+
+Outputs:
+
+- `dist/app` contains static frontend assets.
+- `dist/server/server.mjs` contains the API server.
+- `dist/server/webhook-worker.mjs` contains the outbound webhook delivery worker.
+
+## Same-Origin Deployment
+
+The simplest team deployment serves the API and static app from one origin:
+
+```bash
+node dist/server/server.mjs --static-root ./dist/app --host 0.0.0.0 --port 3000
+```
+
+From release archives, the API entry file is at the archive root:
+
+```bash
+node /opt/mikrolens/api/mikrolens_api_1.0.0/server.mjs \
+  --static-root /opt/mikrolens/app/mikrolens_app_1.0.0 \
+  --host 0.0.0.0 \
+  --port 3000
+```
+
+Set `MIKROLENS_APP_URL` to the public browser URL. The browser config can use the same origin as its API base URL.
+
+## Split-Origin Deployment
+
+If the static app and API use different origins:
+
+1. Set `app/config.json` with the public API base URL before building or deployment.
+2. Set `MIKROLENS_APP_URL` to the public app URL.
+3. Set `MIKROLENS_ALLOWED_ORIGINS` to the public app origin.
+
+## Webhook Worker
+
+Run the worker as a separate long-running process when outbound webhooks are enabled:
+
+```bash
+node dist/server/webhook-worker.mjs
+```
+
+From a release archive:
+
+```bash
+node /opt/mikrolens/api/mikrolens_api_1.0.0/webhook-worker.mjs
+```
+
+Use a stable `MIKROLENS_WEBHOOK_WORKER_ID` per worker process. Multiple workers can run against the same database when their IDs differ.
+
+## Persistent Data
+
+SQLite data should live outside `dist` so upgrades can replace application code without replacing team data.
+
+```bash
+MIKROLENS_DB_PATH=/srv/mikrolens/data/mikrolens.sqlite
+```
+
+## Health Check
+
+Use `/health` or `/api/health` to check the API, database, and static files without exposing deployment details.

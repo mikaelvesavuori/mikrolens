@@ -1,0 +1,43 @@
+---
+title: Automation and API
+description: Connect MikroLens to internal tools with API identities, OpenAPI, and outbound webhooks.
+---
+
+MikroLens exposes an HTTP API for automation and integrations. Use it when product signals, work updates, or planning data need to connect with internal tools.
+
+The OpenAPI schema is served from `/openapi.json` and is also stored at `api/src/openapi/schema.json`.
+
+## API Identities
+
+API identities are managed in Settings. Each identity has access policy settings and receives a bearer token at creation or rotation time.
+
+Use the token as an authorization bearer:
+
+```bash
+curl http://127.0.0.1:3000/api/bootstrap \
+  -H "Authorization: Bearer mikrolens_live_..."
+```
+
+Store API identity tokens like passwords. MikroLens only stores token hashes after provisioning.
+
+API identities can read snapshots and create or update records through bearer auth where the OpenAPI contract allows it. Settings administration routes are intended for authenticated users unless the contract says otherwise.
+
+## Webhooks
+
+Webhook endpoints can be created from Settings or through `/api/webhooks`. MikroLens stores delivery attempts and the webhook worker retries failed deliveries according to the configured retry policy.
+
+Supported event subscriptions include work item, signal, state change, and document events. Use `work-item.*`, `signal.*`, or `document.*` when an endpoint should receive all events for that group.
+
+Useful backend settings:
+
+- `MIKROLENS_WEBHOOK_BATCH_SIZE`
+- `MIKROLENS_WEBHOOK_CONCURRENCY`
+- `MIKROLENS_WEBHOOK_MAX_ATTEMPTS`
+- `MIKROLENS_WEBHOOK_POLL_INTERVAL_MS`
+- `MIKROLENS_WEBHOOK_TIMEOUT_MS`
+- `MIKROLENS_WEBHOOK_STALE_CLAIM_MS`
+- `MIKROLENS_WEBHOOK_WORKER_ID`
+
+## Contract-First Integrations
+
+Prefer generating integration clients from `/openapi.json` when possible. The schema includes bearer auth for human MikroAuth sessions and API identity automation tokens.

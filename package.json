@@ -1,0 +1,91 @@
+{
+  "name": "mikrolens",
+  "version": "1.0.0",
+  "description": "A self-hosted product work system from signals to strategy to delivery",
+  "type": "module",
+  "license": "MIT",
+  "author": "Mikael Vesavuori",
+  "keywords": [
+    "product-management",
+    "engineering-management",
+    "planning",
+    "roadmap",
+    "work-items",
+    "self-hosted",
+    "sqlite",
+    "automation",
+    "webhooks"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikaelvesavuori/mikrolens.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mikaelvesavuori/mikrolens/issues"
+  },
+  "homepage": "https://github.com/mikaelvesavuori/mikrolens#readme",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "npm run build:web && concurrently \"npm run dev:web:serve\" \"npm run dev:api\"",
+    "dev:demo": "MIKROLENS_SEED_DEMO_DATA=true MIKROLENS_DEMO_LOGIN_ENABLED=true npm run dev",
+    "dev:web": "npm run build:web && npm run dev:web:serve",
+    "dev:web:serve": "http-server dist/app -a ${HOST:-127.0.0.1} -p ${WEB_PORT:-8000} -c-1 -P http://127.0.0.1:${WEB_PORT:-8000}?",
+    "dev:api": "PORT=${API_PORT:-3000} MIKROLENS_APP_URL=${MIKROLENS_APP_URL:-http://127.0.0.1:${WEB_PORT:-8000}} MIKROLENS_ALLOWED_ORIGINS=${MIKROLENS_ALLOWED_ORIGINS:-http://127.0.0.1:${WEB_PORT:-8000},http://localhost:${WEB_PORT:-8000}} tsx watch api/src/server.ts",
+    "dev:worker": "tsx watch api/src/webhooks/worker.ts",
+    "docs": "npm run docs:install && npm --prefix docs run dev",
+    "docs:build": "npm run docs:install && npm --prefix docs run build",
+    "docs:preview": "npm run docs:install && npm --prefix docs run preview",
+    "clean": "node -e \"const fs=require('node:fs');for (const path of ['dist','coverage']) fs.rmSync(path,{recursive:true,force:true})\"",
+    "assets": "node ../mikrosuite-site/brand/generate-product-icons.mjs --product mikrolens",
+    "build": "npm run build:web && npm run build:api && npm run build:workers",
+    "build:web": "node esbuild.config.mjs --target web",
+    "build:api": "node esbuild.config.mjs --target api",
+    "build:workers": "node esbuild.config.mjs --target workers",
+    "start:dist": "node dist/server/server.mjs --static-root ./dist/app",
+    "webhooks:worker": "npm run dev:worker",
+    "seed:demo": "tsx api/src/scripts/seedDemoData.ts",
+    "test": "vitest run --config vitest.config.mts --coverage",
+    "test:watch": "vitest --config vitest.config.mts",
+    "typecheck": "tsc --noEmit",
+    "test:types": "npm run typecheck",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "format": "biome format --write .",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build && npm run docs:build",
+    "release": "npm run build && npm run sbom && npm run scan && npm run licenses && npm run release:assets",
+    "release:assets": "node scripts/create-release-assets.mjs",
+    "sbom": "node scripts/create-prod-sbom.mjs",
+    "scan": "mkdir -p security && grype sbom:security/sbom.spdx.json -o json > security/grype-report.json",
+    "licenses": "mkdir -p security && grant check security/sbom.spdx.json --config .grant.yaml > security/grant-report.txt || { cat security/grant-report.txt; exit 1; }",
+    "precommit": "npm run lint && npm run typecheck && npm run test",
+    "prepare": "husky",
+    "docs:install": "npm --prefix docs ci"
+  },
+  "dependencies": {
+    "mikroauth": "1",
+    "mikroconf": "1",
+    "mikroid": "1",
+    "mikromail": "1",
+    "mikrovalid": "1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.15",
+    "@types/node": "25",
+    "@vitest/coverage-v8": "4",
+    "concurrently": "latest",
+    "esbuild": "latest",
+    "html-minifier-terser": "7",
+    "http-server": "14",
+    "husky": "9.1.7",
+    "lightningcss": "1",
+    "tsx": "4",
+    "typescript": "6",
+    "vitest": "4"
+  },
+  "engines": {
+    "node": ">=25.0.0"
+  },
+  "workspaces": [
+    "docs"
+  ]
+}

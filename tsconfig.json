@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "api/src/**/*.ts",
+    "api/tests/**/*.ts",
+    "app/**/*.d.ts",
+    "tests/app/**/*.ts",
+    "api/vitest.config.ts",
+    "vitest.config.mts"
+  ],
+  "exclude": ["node_modules", "dist", "coverage", "docs"]
+}

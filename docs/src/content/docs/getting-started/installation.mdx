@@ -1,0 +1,89 @@
+---
+title: Installation
+description: Install MikroLens, run it locally, or start from release archives.
+---
+
+## Prerequisites
+
+- Node.js 25 or later
+- npm
+
+## Run From Source
+
+From the repository root:
+
+```bash
+npm install
+npm start
+```
+
+Open the frontend at `http://127.0.0.1:8000`. The API server runs at `http://127.0.0.1:3000`.
+
+`npm start` runs the static frontend and Node API together. If SMTP is not configured, invitations and magic links are printed in the terminal.
+
+## Built Frontend Only
+
+Use this when you want to check the bundled browser app separately:
+
+```bash
+npm run dev:web
+```
+
+The built frontend is served at `http://127.0.0.1:8000` and expects the API at `http://127.0.0.1:3000` by default.
+
+## Production Build
+
+```bash
+npm run build
+npm run start:dist
+```
+
+The build writes static app files to `dist/app` and server bundles to `dist/server`.
+
+## Release Archives
+
+Download both archives for a packaged install:
+
+```bash
+mkdir -p mikrolens/api mikrolens/app
+ROOT="$PWD/mikrolens"
+
+curl -sSL -o "$ROOT/mikrolens_api.zip" https://releases.mikrosuite.com/mikrolens_api_latest.zip
+curl -sSL -o "$ROOT/mikrolens_app.zip" https://releases.mikrosuite.com/mikrolens_app_latest.zip
+
+unzip -q "$ROOT/mikrolens_api.zip" -d "$ROOT/api"
+unzip -q "$ROOT/mikrolens_app.zip" -d "$ROOT/app"
+
+API_DIR="$(find "$ROOT/api" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+APP_DIR="$(find "$ROOT/app" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+
+cd "$API_DIR"
+node server.mjs --static-root "$APP_DIR"
+```
+
+Copy and edit `mikrolens.config.json.example` before a real install. Set `auth.initialUser.email` for the first Admin user, then configure SMTP or OAuth so that user can sign in.
+
+## Documentation Site
+
+```bash
+npm run docs
+npm run docs:build
+npm run docs:preview
+```
+
+## Verification
+
+Run the full project check before shipping changes:
+
+```bash
+npm run verify
+```
+
+For smaller checks, use:
+
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+```

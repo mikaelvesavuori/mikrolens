@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>MikroLens</title>
+    <meta
+      name="description"
+      content="Self-hosted product clarity for signals, direction, plans, and operational work."
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' http://127.0.0.1:3000 http://localhost:3000 https:; manifest-src 'self'; form-action 'none'"
+    />
+    <meta name="theme-color" content="#f4f6f9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0d10" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="MikroLens" />
+    <link rel="manifest" href="/manifest.webmanifest?v=mikrolens" />
+    <link rel="icon" href="/favicon.ico?v=mikrolens" sizes="any" />
+    <link rel="icon" href="/favicon-32.png?v=mikrolens" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg?v=mikrolens" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=mikrolens" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles-responsive.css" />
+  </head>
+  <body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-menu" viewBox="0 0 24 24">
+        <path d="M4 6.75h16M4 12h16M4 17.25h16" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-x" viewBox="0 0 24 24">
+        <path d="m6 18 12-12M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-link" viewBox="0 0 24 24">
+        <path d="m13.5 10.5-3 3" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="m8.5 15.5-1.4 1.4a3.8 3.8 0 0 1-5.37-5.37l2.1-2.1a3.8 3.8 0 0 1 5.37 0" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="m15.5 8.5 1.4-1.4a3.8 3.8 0 0 1 5.37 5.37l-2.1 2.1a3.8 3.8 0 0 1-5.37 0" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-list" viewBox="0 0 24 24">
+        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-check-square" viewBox="0 0 24 24">
+        <path d="M9 11.5 11.2 14 16 8.75M5.25 4.5h13.5c.414 0 .75.336.75.75v13.5a.75.75 0 0 1-.75.75H5.25a.75.75 0 0 1-.75-.75V5.25c0-.414.336-.75.75-.75Z" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-quote" viewBox="0 0 24 24">
+        <path d="M9 7.5H6.75A2.25 2.25 0 0 0 4.5 9.75v1.5h3A1.5 1.5 0 0 1 9 12.75v3A1.5 1.5 0 0 1 7.5 17.25h-3v-7.5M19.5 7.5h-2.25A2.25 2.25 0 0 0 15 9.75v1.5h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3v-7.5" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-code" viewBox="0 0 24 24">
+        <path d="m8.25 8.25-4.5 3.75 4.5 3.75M15.75 8.25l4.5 3.75-4.5 3.75M13.5 4.5l-3 15" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24">
+        <path d="M8 8h11v11H8zM5 16H4V4h12v1" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M4 16.5v2A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-2M12 3v12m-4-4 4 4 4-4" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-trash" viewBox="0 0 24 24">
+        <path d="M4 7h16m-10 4v6m4-6v6M9 7V5h6v2m-9 0 1 14h10l1-14" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-sun" viewBox="0 0 24 24">
+        <path d="M12 3v1.5m0 15V21m8.485-8.485H21m-18 0H3m15.364-6.364 1.06-1.06M4.576 19.425l1.06-1.06m12.728 0 1.06 1.06M4.576 4.575l1.06 1.06M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-moon" viewBox="0 0 24 24">
+        <path fill="currentColor" stroke="none" d="M12 20.5a8.5 8.5 0 0 0 8.5-8.5c0-.7-.1-1.05-.43-1.05-.2 0-.36.12-.56.22a5.8 5.8 0 0 1-2.58.58 4.68 4.68 0 0 1-4.68-4.68c0-.94.2-1.8.58-2.58.1-.2.22-.36.22-.56 0-.33-.35-.43-1.05-.43a8.5 8.5 0 1 0 0 17Z" />
+      </symbol>
+      <symbol id="icon-log-out" viewBox="0 0 24 24">
+        <path d="M9.75 19.5H6A2.25 2.25 0 0 1 3.75 17.25V6.75A2.25 2.25 0 0 1 6 4.5h3.75M15 8.25 18.75 12 15 15.75M18.5 12H9.75" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-mail" viewBox="0 0 24 24">
+        <path d="M4.5 6.75h15v10.5h-15V6.75Z" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="m5.25 7.5 6.75 4.75 6.75-4.75" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+    </svg>
+    <section id="auth-root" hidden></section>
+    <div id="app-shell">
+      <aside id="sidebar" class="sidebar">
+        <section id="sidebar-brand" class="sidebar-brand"></section>
+        <nav id="primary-nav" class="primary-nav" aria-label="Primary"></nav>
+        <section id="sidebar-footer" class="sidebar-footer"></section>
+      </aside>
+      <main class="workspace">
+        <section id="main-panel" class="main-panel" aria-live="polite"></section>
+      </main>
+    </div>
+    <button
+      id="mobile-nav-toggle"
+      class="mobile-nav-fab"
+      type="button"
+      data-action="toggle-mobile-nav"
+      aria-controls="sidebar"
+      aria-label="Open navigation"
+      aria-expanded="false"
+      hidden
+    ></button>
+    <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+    <div id="sidebar-backdrop" class="sidebar-backdrop" hidden></div>
+    <div id="modal-root"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

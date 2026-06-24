@@ -1,0 +1,47 @@
+{
+  "auth": {
+    "appUrl": "https://app.mikrolens.example.com",
+    "initialUser": {
+      "email": "admin@example.com",
+      "name": "Admin",
+      "role": "Admin"
+    },
+    "jwtSecret": "replace-with-a-long-random-token-signing-secret",
+    "magicLinkExpiryMinutes": 30,
+    "sessionCookieSameSite": "auto",
+    "sessionSecret": "replace-with-a-long-random-secret"
+  },
+  "demo": {
+    "loginEnabled": false,
+    "seedOnEmpty": false
+  },
+  "email": {
+    "debug": true,
+    "emailSubject": "Sign in to MikroLens",
+    "host": "smtp.example.com",
+    "maxRetries": 2,
+    "password": "replace-me",
+    "port": 465,
+    "secure": true,
+    "user": "replace-me@example.com"
+  },
+  "oauth": {
+    "presets": {
+      "google": {
+        "clientId": "replace-me",
+        "clientSecret": "replace-me",
+        "redirectUri": "https://api.mikrolens.example.com/auth/oauth/google/callback"
+      }
+    },
+    "rateLimiting": {
+      "maxAttempts": 10,
+      "windowMs": 900000
+    },
+    "stateExpirySeconds": 600
+  },
+  "server": {
+    "allowedOrigins": [
+      "https://app.mikrolens.example.com"
+    ]
+  }
+}

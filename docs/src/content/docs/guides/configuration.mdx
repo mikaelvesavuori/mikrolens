@@ -1,0 +1,391 @@
+---
+title: Configuration
+description: Configure the MikroLens app, API, auth, storage, demo data, webhooks, and deployment URLs.
+---
+
+MikroLens uses a backend JSON config file for stable service settings, environment variables for deployment-owned overrides and secrets, CLI flags for one-off process overrides, and a small browser config file for the static frontend.
+
+## Configuration Overview
+
+The backend reads configuration in this order, from highest to lowest priority:
+
+1. CLI flags, such as `--port 3000`
+2. Environment variables, such as `PORT=3000`
+3. `mikrolens.config.json`
+4. Built-in defaults
+
+Use `mikrolens.config.json` for stable service configuration. Use environment variables for secrets, systemd units, containers, and paths owned by the deployment node rather than by the app repo. Use CLI flags for local overrides and release archive smoke tests.
+
+The browser app reads `app/config.json` in local development, or `dist/app/config.json` after `npm run build:web`.
+
+## Backend Configuration File
+
+Create a backend config file from the example:
+
+```bash
+cp mikrolens.config.json.example mikrolens.config.json
+```
+
+MikroLens looks for `mikrolens.config.json` in the working directory by default. Point at another file with:
+
+```bash
+MIKROLENS_CONFIG_PATH=/etc/mikrolens/mikrolens.config.json npm run start:dist
+```
+
+Fresh databases start without demo users, demo Spaces, demo work, or demo documents. MikroLens only creates the built-in Now, Next, and Later Horizon defaults needed for real Spaces.
+
+## Production Example
+
+```json
+{
+  "auth": {
+    "appUrl": "https://app.mikrolens.example.com",
+    "initialUser": {
+      "email": "admin@example.com",
+      "name": "Admin",
+      "role": "Admin"
+    },
+    "jwtSecret": "replace-with-at-least-32-random-characters",
+    "jwtExpirySeconds": 3600,
+    "refreshTokenExpirySeconds": 604800,
+    "maxActiveSessions": 5,
+    "magicLinkExpiryMinutes": 30,
+    "sessionCookieDomain": ".mikrolens.example.com",
+    "sessionCookieSameSite": "auto",
+    "sessionSecret": "replace-with-a-long-random-cookie-secret"
+  },
+  "demo": {
+    "loginEnabled": false,
+    "seedOnEmpty": false
+  },
+  "email": {
+    "emailSubject": "Sign in to MikroLens",
+    "host": "smtp.example.com",
+    "port": 465,
+    "secure": true,
+    "user": "signin@example.com",
+    "password": "replace-with-smtp-token",
+    "maxRetries": 2,
+    "debug": false
+  },
+  "oauth": {
+    "presets": {
+      "google": {
+        "clientId": "replace-me",
+        "clientSecret": "replace-me",
+        "redirectUri": "https://api.mikrolens.example.com/auth/oauth/google/callback"
+      }
+    },
+    "rateLimiting": {
+      "maxAttempts": 10,
+      "windowMs": 900000
+    },
+    "stateExpirySeconds": 600
+  },
+  "server": {
+    "allowedOrigins": ["https://app.mikrolens.example.com"],
+    "host": "127.0.0.1",
+    "port": 3000,
+    "staticRoot": "/opt/mikrolens/app"
+  },
+  "storage": {
+    "databasePath": "/var/lib/mikrolens/mikrolens.sqlite"
+  },
+  "webhooks": {
+    "batchSize": 10,
+    "concurrency": 5,
+    "maxAttempts": 6,
+    "pollIntervalMs": 1000,
+    "requestTimeoutMs": 5000,
+    "staleClaimTimeoutMs": 60000,
+    "workerId": "mikrolens-worker-1"
+  }
+}
+```
+
+Replace placeholder values before starting MikroLens. For a reverse-proxy deployment, keep `server.host` bound to `127.0.0.1` and let Caddy, Nginx, or another edge terminate public HTTPS.
+
+## Local Development Example
+
+```json
+{
+  "auth": {
+    "appUrl": "http://127.0.0.1:8000",
+    "initialUser": {
+      "email": "admin@example.com",
+      "name": "Admin",
+      "role": "Admin"
+    },
+    "jwtSecret": "mikrolens-dev-jwt-secret-change-before-production",
+    "sessionSecret": "mikrolens-dev-session-secret",
+    "sessionCookieSameSite": "auto"
+  },
+  "demo": {
+    "loginEnabled": true,
+    "seedOnEmpty": true
+  },
+  "email": {
+    "debug": true
+  },
+  "server": {
+    "allowedOrigins": ["http://127.0.0.1:8000", "http://localhost:8000"],
+    "host": "127.0.0.1",
+    "port": 3000
+  },
+  "storage": {
+    "databasePath": "./data/mikrolens.sqlite"
+  }
+}
+```
+
+You can also use:
+
+```bash
+npm run dev:demo
+```
+
+That enables demo data seeding and direct demo sign-in for local demos, screenshots, walkthroughs, and scaffold workspaces.
+
+## Complete Backend Reference
+
+| JSON key | Purpose |
+| --- | --- |
+| `auth.appUrl` | Public browser URL used in magic-link redirects and auth callbacks. |
+| `auth.initialUser.email` | First admin email created when the user table is empty. Leave blank only for intentionally unauthenticated local starts. |
+| `auth.initialUser.name` | Display name for the first admin. Defaults to the email prefix when blank. |
+| `auth.initialUser.role` | First user role. Use `Admin` for normal installs. |
+| `auth.jwtSecret` | MikroAuth token signing secret. Must be stable and at least 32 characters in production. |
+| `auth.jwtExpirySeconds` | Access-token lifetime. Default `3600`. |
+| `auth.refreshTokenExpirySeconds` | Refresh-token lifetime. Default `604800`. |
+| `auth.maxActiveSessions` | Maximum active sessions per user. Default `5`. |
+| `auth.magicLinkExpiryMinutes` | Passwordless sign-in link lifetime in minutes. Default `30`. |
+| `auth.sessionCookieDomain` | Optional browser session cookie domain, for example `.example.com`. |
+| `auth.sessionCookieSameSite` | Cookie SameSite mode: `auto`, `lax`, `none`, or `strict`. Default `auto`. |
+| `auth.sessionSecret` | Cookie session secret used by the browser session layer. |
+| `demo.loginEnabled` | Enables direct demo sign-in endpoints. Default `false`. |
+| `demo.seedOnEmpty` | Seeds the bundled demo/scaffold workspace when the database has no Spaces. Default `false`. |
+| `email.debug` | Enables verbose email diagnostics. Keep `false` in production. |
+| `email.emailSubject` | Subject used for passwordless sign-in links. |
+| `email.host` | SMTP hostname. If unset, sign-in links are logged to the console. |
+| `email.maxRetries` | SMTP retry count. Default `2`. |
+| `email.password` | SMTP password or token. |
+| `email.port` | SMTP port. Default `465`. |
+| `email.secure` | Use TLS for SMTP. Default `true`. |
+| `email.user` | SMTP username. |
+| `oauth.presets.github` | GitHub OAuth client credentials. |
+| `oauth.presets.gitlab` | GitLab OAuth client credentials. |
+| `oauth.presets.google` | Google OAuth client credentials. |
+| `oauth.presets.microsoft` | Microsoft OAuth client credentials. |
+| `oauth.custom` | Fully custom OAuth provider definitions. |
+| `oauth.rateLimiting.maxAttempts` | OAuth callback attempt limit per window. |
+| `oauth.rateLimiting.windowMs` | OAuth rate-limit window in milliseconds. |
+| `oauth.stateExpirySeconds` | OAuth state token lifetime. |
+| `server.allowedOrigins` | CORS origins allowed to call the API with browser credentials. |
+| `server.host` | Local API bind host. Default `127.0.0.1`. |
+| `server.port` | Local API HTTP port. Default `3000`. |
+| `server.staticRoot` | Static frontend directory when the API serves the app. |
+| `storage.databasePath` | SQLite database path. Keep it outside `dist` in production. |
+| `webhooks.batchSize` | Delivery rows claimed per worker pass. Default `10`. |
+| `webhooks.concurrency` | Concurrent outbound webhook deliveries. Default `5`. |
+| `webhooks.maxAttempts` | Retry attempts before a delivery is treated as failed. Default `6`. |
+| `webhooks.pollIntervalMs` | Worker polling interval. Default `1000`. |
+| `webhooks.requestTimeoutMs` | Outbound webhook request timeout. Default `5000`. |
+| `webhooks.staleClaimTimeoutMs` | Time before an abandoned worker claim can be retried. Default `60000`. |
+| `webhooks.workerId` | Stable identifier for a webhook worker process. |
+
+## Environment Variables
+
+Environment variables are useful for systemd units, containers, release archive deployments, and values that should not be committed to JSON.
+
+### Runtime
+
+| Variable | JSON key |
+| --- | --- |
+| `MIKROLENS_CONFIG_PATH` | Backend config file path. |
+| `HOST` | `server.host` |
+| `PORT` | `server.port` |
+| `MIKROLENS_ALLOWED_ORIGINS` | `server.allowedOrigins`, comma-separated. |
+| `MIKROLENS_APP_URL` | `auth.appUrl` |
+| `MIKROLENS_DB_PATH` | `storage.databasePath` |
+| `MIKROLENS_STATIC_ROOT` | `server.staticRoot` |
+
+### Auth
+
+| Variable | JSON key |
+| --- | --- |
+| `MIKROLENS_AUTH_JWT_SECRET` | `auth.jwtSecret` |
+| `MIKROLENS_AUTH_JWT_EXPIRY_SECONDS` | `auth.jwtExpirySeconds` |
+| `MIKROLENS_AUTH_REFRESH_TOKEN_EXPIRY_SECONDS` | `auth.refreshTokenExpirySeconds` |
+| `MIKROLENS_AUTH_MAX_ACTIVE_SESSIONS` | `auth.maxActiveSessions` |
+| `MIKROLENS_INITIAL_USER_EMAIL` | `auth.initialUser.email` |
+| `MIKROLENS_INITIAL_USER_NAME` | `auth.initialUser.name` |
+| `MIKROLENS_INITIAL_USER_ROLE` | `auth.initialUser.role` |
+| `MIKROLENS_MAGIC_LINK_EXPIRY_MINUTES` | `auth.magicLinkExpiryMinutes` |
+| `MIKROLENS_SESSION_SECRET` | `auth.sessionSecret`; also used as a fallback JWT secret. |
+| `MIKROLENS_SESSION_COOKIE_DOMAIN` | `auth.sessionCookieDomain` |
+| `MIKROLENS_SESSION_COOKIE_SAME_SITE` | `auth.sessionCookieSameSite` |
+
+### Demo And Scaffolding
+
+| Variable | JSON key |
+| --- | --- |
+| `MIKROLENS_DEMO_LOGIN_ENABLED` | `demo.loginEnabled` |
+| `MIKROLENS_SEED_DEMO_DATA` | `demo.seedOnEmpty` |
+
+Both values must be intentionally set for the local demo flow to show demo users and allow direct demo sign-in.
+
+### Email
+
+| Variable | JSON key |
+| --- | --- |
+| `MIKROLENS_EMAIL_DEBUG` | `email.debug` |
+| `MIKROLENS_EMAIL_SUBJECT` | `email.emailSubject` |
+| `MIKROLENS_EMAIL_HOST` | `email.host` |
+| `MIKROLENS_EMAIL_MAX_RETRIES` | `email.maxRetries` |
+| `MIKROLENS_EMAIL_PASSWORD` | `email.password` |
+| `MIKROLENS_EMAIL_PORT` | `email.port` |
+| `MIKROLENS_EMAIL_SECURE` | `email.secure` |
+| `MIKROLENS_EMAIL_USER` | `email.user` |
+
+If `email.host`, `email.user`, and `email.password` are not all set together, MikroLens uses console delivery and prints magic links to the server logs.
+
+### Webhooks
+
+| Variable | JSON key |
+| --- | --- |
+| `MIKROLENS_WEBHOOK_BATCH_SIZE` | `webhooks.batchSize` |
+| `MIKROLENS_WEBHOOK_CONCURRENCY` | `webhooks.concurrency` |
+| `MIKROLENS_WEBHOOK_MAX_ATTEMPTS` | `webhooks.maxAttempts` |
+| `MIKROLENS_WEBHOOK_POLL_INTERVAL_MS` | `webhooks.pollIntervalMs` |
+| `MIKROLENS_WEBHOOK_TIMEOUT_MS` | `webhooks.requestTimeoutMs` |
+| `MIKROLENS_WEBHOOK_STALE_CLAIM_MS` | `webhooks.staleClaimTimeoutMs` |
+| `MIKROLENS_WEBHOOK_WORKER_ID` | `webhooks.workerId` |
+
+## CLI Flags
+
+CLI flags are useful for local starts, release archive checks, and temporary overrides.
+
+| Flag | JSON key |
+| --- | --- |
+| `--allowed-origins` | `server.allowedOrigins`, comma-separated. |
+| `--app-url` | `auth.appUrl` |
+| `--auth-jwt-expiry-seconds` | `auth.jwtExpirySeconds` |
+| `--auth-jwt-secret` | `auth.jwtSecret` |
+| `--auth-max-active-sessions` | `auth.maxActiveSessions` |
+| `--auth-refresh-token-expiry-seconds` | `auth.refreshTokenExpirySeconds` |
+| `--db` | `storage.databasePath` |
+| `--demo-login` | `demo.loginEnabled` |
+| `--email-debug` | `email.debug` |
+| `--email-host` | `email.host` |
+| `--email-max-retries` | `email.maxRetries` |
+| `--email-password` | `email.password` |
+| `--email-port` | `email.port` |
+| `--email-secure` | `email.secure` |
+| `--email-subject` | `email.emailSubject` |
+| `--email-user` | `email.user` |
+| `--host` | `server.host` |
+| `--initial-user-email` | `auth.initialUser.email` |
+| `--initial-user-name` | `auth.initialUser.name` |
+| `--initial-user-role` | `auth.initialUser.role` |
+| `--magic-link-expiry-minutes` | `auth.magicLinkExpiryMinutes` |
+| `--port` | `server.port` |
+| `--seed-demo-data` | `demo.seedOnEmpty` |
+| `--session-cookie-domain` | `auth.sessionCookieDomain` |
+| `--session-cookie-same-site` | `auth.sessionCookieSameSite` |
+| `--session-secret` | `auth.sessionSecret` |
+| `--static-root` | `server.staticRoot` |
+| `--webhook-batch-size` | `webhooks.batchSize` |
+| `--webhook-concurrency` | `webhooks.concurrency` |
+| `--webhook-max-attempts` | `webhooks.maxAttempts` |
+| `--webhook-poll-interval-ms` | `webhooks.pollIntervalMs` |
+| `--webhook-stale-claim-ms` | `webhooks.staleClaimTimeoutMs` |
+| `--webhook-timeout-ms` | `webhooks.requestTimeoutMs` |
+| `--webhook-worker-id` | `webhooks.workerId` |
+
+## Frontend Config
+
+The browser config tells the static app where the API lives and which sign-in controls should appear.
+
+Create it from the example for local development:
+
+```bash
+cp app/config.json.example app/config.json
+```
+
+For production static hosting, write the same file to `dist/app/config.json` after building or include it before packaging the app archive.
+
+```json
+{
+  "api": {
+    "baseUrl": "https://api.mikrolens.example.com"
+  },
+  "auth": {
+    "enableOAuth": true,
+    "enablePasswordless": true,
+    "mode": "auto",
+    "subtitle": "Use your organization login or request a secure sign-in link.",
+    "title": "MikroLens"
+  }
+}
+```
+
+| JSON key | Purpose |
+| --- | --- |
+| `api.baseUrl` | Public API origin used by the browser app. Defaults to `window.location.origin`. |
+| `auth.enableOAuth` | Shows OAuth sign-in controls when providers are available. |
+| `auth.enablePasswordless` | Shows passwordless email sign-in controls. |
+| `auth.mode` | `auto` gates the UI once users exist, `required` always gates, and `disabled` never gates. |
+| `auth.subtitle` | Optional sign-in screen supporting text. |
+| `auth.title` | Sign-in screen title. |
+
+For same-origin deployments, omit `app/config.json` or set `api.baseUrl` to the public app origin. For split-origin deployments, set `api.baseUrl` to the public API origin and set backend `server.allowedOrigins` to the public app origin.
+
+## OAuth Providers
+
+Use `oauth.presets` for GitHub, GitLab, Google, or Microsoft. Each preset needs `clientId`, `clientSecret`, and `redirectUri`. Add `scopes` only when you need to override the preset defaults.
+
+Use `oauth.custom` for providers outside those presets. A custom provider includes authorization, token, and user-info URLs, credentials, redirect URI, scopes, and optional request headers or authorization parameters.
+
+The browser only shows OAuth sign-in when the backend exposes configured providers and the frontend has `auth.enableOAuth` set to `true`.
+
+## Demo And Scaffolding Data
+
+The bundled demo data is useful for tests, screenshots, walkthroughs, and optional scaffolding. It is not part of the normal install flow.
+
+Seed it intentionally:
+
+```bash
+npm run seed:demo
+```
+
+Or run a local demo instance with both seed data and direct demo sign-in enabled:
+
+```bash
+npm run dev:demo
+```
+
+Production installs should keep `demo.loginEnabled` and `demo.seedOnEmpty` set to `false`.
+
+## Validation
+
+MikroConf resolves the backend config and MikroValid validates the final shape before the API or webhook worker starts.
+
+Startup fails if:
+
+- required sections are missing
+- ports, retry counts, and timing values are outside valid ranges
+- `auth.jwtSecret` is shorter than 32 characters
+- `auth.sessionSecret` is shorter than 16 characters
+- `auth.sessionCookieSameSite` is not `auto`, `lax`, `none`, or `strict`
+- configured URLs such as `auth.appUrl` or `server.allowedOrigins` are malformed
+- email delivery is partly configured instead of setting `email.host`, `email.user`, and `email.password` together
+
+The browser config is also validated with MikroValid. If it is missing, malformed, or has a non-absolute `api.baseUrl`, the app falls back to same-origin defaults.
+
+## Security Notes
+
+- Keep `auth.jwtSecret`, `auth.sessionSecret`, OAuth client secrets, and SMTP passwords out of committed config files.
+- Generate production secrets with a password manager or `openssl rand -base64 32`.
+- Keep demo login and demo seeding disabled in production.
+- Keep SQLite data outside `dist` so upgrades can replace application code without replacing team data.
+- Set `server.allowedOrigins` narrowly for split-origin browser/API deployments.

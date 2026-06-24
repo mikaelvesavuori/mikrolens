@@ -1,0 +1,426 @@
+@media (max-width: 1260px) {
+  .content-grid.three-column,
+  .pressure-grid,
+  .modal-grid,
+  .document-editor-workspace-split,
+  .settings-top-grid,
+  .settings-summary-grid,
+  .settings-horizon-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-brief {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plan-row {
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 1080px) {
+  body.mobile-nav-open {
+    overflow: hidden;
+  }
+
+  body {
+    grid-template-columns: 1fr;
+    width: 100%;
+    min-height: var(--viewport-height);
+    margin: 0;
+  }
+
+  body.auth-visible {
+    width: 100%;
+  }
+
+  .sidebar {
+    min-height: 0;
+    height: var(--viewport-height);
+    max-height: var(--viewport-height);
+    position: fixed;
+    inset: 0 auto 0 0;
+    top: 0;
+    width: min(22rem, calc(100vw - 0.75rem));
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    background: var(--color-surface-muted);
+    border-right: 1px solid var(--color-border);
+    z-index: var(--z-sidebar);
+    transform: translateX(calc(-100% - 1.5rem));
+    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow: hidden;
+  }
+
+  :root[data-theme="dark"] .sidebar {
+    background: var(--color-surface);
+    border-right-color: var(--color-border);
+  }
+
+  .workspace {
+    height: var(--viewport-height);
+    padding: calc(var(--space-2) + var(--safe-top)) var(--space-2)
+      calc(var(--space-4) + var(--safe-bottom));
+  }
+
+  body.mobile-nav-open .sidebar {
+    transform: translateX(0);
+  }
+
+  body.mobile-nav-open .sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
+  }
+
+  .mobile-nav-fab:not([hidden]) {
+    display: inline-grid;
+  }
+
+  .topbar,
+  .work-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .topbar-controls,
+  .toolbar-block-search,
+  .toolbar-block-end {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    flex-basis: auto;
+  }
+
+  .topbar-controls,
+  .toolbar-block-end {
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  .section-title,
+  .item-heading,
+  .plan-cell-header,
+  .board-column-header,
+  .evolution-work-group-header {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 780px) {
+  :root {
+    --modal-surface-viewport-gap: 1.5rem;
+    --modal-editor-viewport-gap: 0.75rem;
+  }
+
+  body {
+    width: 100%;
+    min-height: var(--viewport-height);
+    margin: 0;
+  }
+
+  body.auth-visible {
+    width: 100%;
+  }
+
+  .sidebar,
+  .surface,
+  .modal-surface {
+    padding: var(--space-4);
+  }
+
+  .sidebar {
+    width: calc(100vw - 0.75rem);
+  }
+
+  .workspace {
+    gap: var(--space-4);
+    padding: var(--safe-top) var(--space-1) calc(var(--space-4) + var(--safe-bottom));
+  }
+
+  .content-grid.two-column,
+  .content-grid.three-column,
+  .metric-grid,
+  .product-brief,
+  .pressure-grid,
+  .settings-summary-grid,
+  .settings-horizon-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dense-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .dense-row-meta {
+    justify-content: flex-start;
+  }
+
+  .plan-gantt {
+    --timeline-sidebar-width: 15rem;
+    --timeline-month-width: 5.5rem;
+  }
+
+  .plan-gantt-row {
+    gap: var(--space-3);
+  }
+
+  .plan-gantt-row-copy {
+    padding-right: var(--space-3);
+  }
+
+  .board {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(17rem, 86vw);
+    gap: var(--space-3);
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+  }
+
+  .stack-column::after,
+  .stack-column.is-drop-available::after,
+  .stack-column.is-drop-target::after,
+  .stack-column.is-drop-target::before {
+    display: none;
+  }
+
+  .board-column,
+  .board-column-body,
+  .stack-column {
+    min-width: 17rem;
+  }
+
+  .board-column {
+    padding-right: 0;
+  }
+
+  .board-column-body {
+    min-height: 0;
+  }
+
+  .topbar-copy,
+  .topbar-controls,
+  .toolbar-block-search,
+  .toolbar-block,
+  .toolbar-block-end {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .topbar-copy {
+    justify-content: space-between;
+  }
+
+  .compact-control {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .topbar-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .sidebar-session,
+  .segmented-control-compact {
+    width: 100%;
+  }
+
+  .main-action-bar {
+    justify-content: flex-start;
+  }
+
+  .main-action-bar .button,
+  .main-action-bar .compact-control {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .settings-switcher {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .settings-switcher .segmented-control,
+  .settings-switcher-action {
+    width: 100%;
+  }
+
+  .work-toolbar {
+    gap: var(--space-3);
+  }
+
+  .settings-summary-strip,
+  .saved-view-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+  }
+
+  .plan-row-cells {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(15.5rem, 82vw));
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
+    gap: var(--space-3);
+  }
+
+  .plan-gantt-scroll {
+    margin: 0 -0.25rem;
+    padding: 0 0.25rem 0.35rem;
+  }
+
+  .evolution-work-group-header {
+    grid-template-columns: 1fr;
+  }
+
+  .evolution-work-group-meta {
+    justify-content: flex-start;
+  }
+
+  .search-control,
+  .control-inline {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .work-item-owner-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-backdrop {
+    padding: 0.75rem;
+  }
+
+  .modal-surface {
+    max-height: calc(var(--viewport-height) - var(--modal-surface-viewport-gap));
+    width: 100%;
+    padding: var(--space-4);
+  }
+
+  .modal-editor {
+    width: 100%;
+    max-height: calc(var(--viewport-height) - var(--modal-editor-viewport-gap));
+  }
+
+  .modal-grid-work-item {
+    flex-direction: column;
+  }
+
+  .modal-grid > .modal-section + .modal-section,
+  .modal-grid-work-item > .modal-section + .modal-section {
+    padding-top: var(--space-4);
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .modal-sidebar-collapsible,
+  .modal-sidebar-collapsible.is-collapsed {
+    width: 100%;
+    flex-basis: auto;
+    padding-inline: 0;
+  }
+
+  .modal-sidebar-collapsible.is-collapsed .modal-sidebar-body {
+    opacity: 1;
+    transform: none;
+    max-height: 120rem;
+    overflow: visible;
+    pointer-events: auto;
+    visibility: visible;
+  }
+
+  .modal-sidebar-collapsible.is-collapsed .collapsible-panel-toggle {
+    justify-content: space-between;
+  }
+
+  .modal-grid,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .document-editor-shell,
+  .document-editor-shell.is-inspector-open {
+    grid-template-columns: 1fr;
+  }
+
+  .document-editor-sidebar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-row-cells {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .document-editor-topline,
+  .document-editor-modebar,
+  .document-editor-footnote,
+  .document-editor-details-toggle {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .document-editor-toolbar,
+  .document-editor-presence {
+    width: 100%;
+  }
+
+  .document-editor-presence-inline {
+    justify-content: flex-start;
+  }
+
+  .document-editor-main,
+  .document-editor-sidebar {
+    min-height: 0;
+    position: static;
+  }
+
+  .document-editor-workspace {
+    min-height: 0;
+  }
+
+  .document-editor-markdown {
+    min-height: 24rem;
+  }
+
+  .toast-root {
+    top: 0.75rem;
+    right: 0.75rem;
+    left: 0.75rem;
+  }
+
+  .toast-stack {
+    width: 100%;
+  }
+
+  .record-timestamps-inline {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .record-timestamps-inline .record-timestamp {
+    min-width: 0;
+  }
+
+  .auth-shell {
+    min-height: var(--viewport-height);
+    padding: calc(var(--space-3) + var(--safe-top)) var(--space-2)
+      calc(var(--space-6) + var(--safe-bottom));
+  }
+
+  .auth-card {
+    padding: var(--space-5);
+  }
+}
